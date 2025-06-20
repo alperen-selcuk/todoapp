@@ -20,10 +20,18 @@ docker-build:
   stage: push
   image: docker:20.10.16
   services:
-    - docker:20.10.16-dind
+    - name: docker:20.10.16-dind
+      alias: docker
   variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_DRIVER: overlay2
   before_script:
+    - |
+      for i in $(seq 1 30); do
+        docker info && break
+        echo "Waiting for docker daemon..."
+        sleep 1
+      done
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $REGISTRY_HOST
   script:
     - export IMAGE_NAME="$REGISTRY_HOST/$CI_PROJECT_PATH"
