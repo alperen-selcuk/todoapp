@@ -6,23 +6,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/todos")
 public class TodoController {
 
     @Autowired
     private TodoRepository todoRepository;
 
-    @GetMapping
+    @GetMapping("/")
+    public String home() {
+        return "Todo App is running! Try /todos to see all todos.";
+    }
+
+    @GetMapping("/todos")
     public List<Todo> getTodos() {
         return todoRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/todos")
     public Todo createTodo(@RequestBody Todo todo) {
         return todoRepository.save(todo);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/todos/{id}")
     public Todo updateTodo(@PathVariable Long id, @RequestBody Todo todoDetails) {
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
         todo.setTitle(todoDetails.getTitle());
@@ -30,7 +34,7 @@ public class TodoController {
         return todoRepository.save(todo);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/todos/{id}")
     public void deleteTodo(@PathVariable Long id) {
         todoRepository.deleteById(id);
     }
