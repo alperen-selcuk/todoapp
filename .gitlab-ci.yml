@@ -48,5 +48,5 @@ deploy-to-k8s:
     - echo "$KUBE_CONFIG_DATA" | base64 -d > ~/.kube/config
   script:
     - sed -i "s|__IMAGE__|$CI_REGISTRY_IMAGE:$IMAGE_TAG|g" k8s/deployment.yaml
-    - kubectl apply -f k8s/
+    - kubectl -n default apply -f k8s/
 
