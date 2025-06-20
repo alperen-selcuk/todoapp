@@ -9,7 +9,7 @@ stages:
 
 maven-build:
   stage: build
-  image: maven:3.8.5-openjdk-8
+  image: maven:3.8.5-openjdk-17
   script:
     - mvn package
   artifacts:
