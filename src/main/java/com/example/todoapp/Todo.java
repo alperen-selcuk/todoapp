@@ -1,12 +1,21 @@
 package com.example.todoapp;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Todo {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
     private boolean completed;
 
-    public Todo(long id, String title, boolean completed) {
-        this.id = id;
+    public Todo() {}
+
+    public Todo(String title, boolean completed) {
         this.title = title;
         this.completed = completed;
     }

@@ -1,23 +1,37 @@
 package com.example.todoapp;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/todos")
 public class TodoController {
 
-    private final List<Todo> todoList = new ArrayList<>();
+    @Autowired
+    private TodoRepository todoRepository;
 
-    public TodoController() {
-        todoList.add(new Todo(1, "Create a Spring Boot application", true));
-        todoList.add(new Todo(2, "Dockerize the application", false));
+    @GetMapping
+    public List<Todo> getTodos() {
+        return todoRepository.findAll();
     }
 
-    @GetMapping("/todos")
-    public List<Todo> getTodos() {
-        return todoList;
+    @PostMapping
+    public Todo createTodo(@RequestBody Todo todo) {
+        return todoRepository.save(todo);
+    }
+
+    @PutMapping("/{id}")
+    public Todo updateTodo(@PathVariable Long id, @RequestBody Todo todoDetails) {
+        Todo todo = todoRepository.findById(id).orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
+        todo.setTitle(todoDetails.getTitle());
+        todo.setCompleted(todoDetails.isCompleted());
+        return todoRepository.save(todo);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteTodo(@PathVariable Long id) {
+        todoRepository.deleteById(id);
     }
 }
