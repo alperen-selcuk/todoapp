@@ -4,6 +4,7 @@ variables:
 stages:
   - build
   - push
+  - deploy
 
 
 maven-build:
@@ -36,4 +37,16 @@ docker-build:
   script:
     - docker build -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
     - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+
+deploy-to-k8s:
+  stage: deploy
+  image:
+    name: bitnami/kubectl:latest
+    entrypoint: [""]
+  before_script:
+    - mkdir -p ~/.kube
+    - echo "$KUBECONFIG" | base64 -d > ~/.kube/config
+  script:
+    - sed -i "s|__IMAGE__|$CI_REGISTRY_IMAGE:$IMAGE_TAG|g" k8s/deployment.yaml
+    - kubectl apply -f k8s/
 
