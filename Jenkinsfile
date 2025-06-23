@@ -19,11 +19,12 @@ spec:
     securityContext:
       privileged: true
     volumeMounts:
-    - name: docker-graph-storage
-      mountPath: /var/lib/docker
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
   volumes:
-  - name: docker-graph-storage
-    emptyDir: {}
+  - name: docker-sock
+    hostPath:
+      path: /var/run/docker.sock
 """
     }
   }
