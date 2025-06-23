@@ -14,10 +14,14 @@ spec:
     command:
     - cat
     tty: true
+    volumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
   - name: docker
-    image: docker:20.10.16-dind
-    securityContext:
-      privileged: true
+    image: docker:20.10.16
+    command:
+    - cat
+    tty: true
     volumeMounts:
     - name: docker-sock
       mountPath: /var/run/docker.sock
@@ -27,12 +31,6 @@ spec:
       path: /var/run/docker.sock
 """
     }
-  }
-
-  environment {
-    DOCKER_HOST = 'tcp://localhost:2375'
-    DOCKER_DRIVER = 'overlay2'
-    DOCKER_TLS_CERTDIR = ''
   }
 
   stages {
@@ -47,10 +45,13 @@ spec:
     stage('Docker Build') {
       steps {
         container('docker') {
-          sh '''
-            dockerd-entrypoint.sh & sleep 10
-            docker build -t todoapp:latest .
-          '''
+          script {
+            // Copy necessary files to the docker container if needed
+            sh 'cp -r ../maven/target/ ./'
+            
+            // Build Docker image using host's Docker daemon
+            sh 'docker build -t todoapp:latest .'
+          }
         }
       }
     }
