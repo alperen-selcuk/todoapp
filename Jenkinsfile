@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
   - name: maven
-    image: maven:3.9.10-eclipse-temurin-17-alpine
+    image: maven:3.8.5-openjdk-17
     command:
     - cat
     tty: true
