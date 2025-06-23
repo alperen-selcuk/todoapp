@@ -30,6 +30,8 @@ spec:
 
   environment {
     DOCKER_HOST = 'tcp://localhost:2375'
+    DOCKER_DRIVER= overlay2
+    DOCKER_TLS_CERTDIR= ""
   }
 
   stages {
