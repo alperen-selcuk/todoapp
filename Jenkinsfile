@@ -25,8 +25,8 @@ spec:
       value: overlay2
     - name: DOCKER_TLS_CERTDIR
       value: ""
-  - name: kubectl
-    image: bitnami/kubectl:latest
+  - name: git
+    image: alpine/git
     command:
     - cat
     tty: true
@@ -34,9 +34,7 @@ spec:
     }
   }
 
-  environment {
-    KUBECONFIG_B64 = credentials('kubeconfig') 
-  }
+
 
   stages {
     stage('Maven Build') {
@@ -62,18 +60,21 @@ spec:
     }
     stage('Kubernetes Deploy') {
       steps {
-        container('kubectl') {
-          withCredentials([string(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+        container('git') {
+          withCredentials([usernamePassword(credentialsId: 'github', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
             sh '''
-                echo "$KUBECONFIG" | base64 -d > $(pwd)/kubeconfig.yaml
-                export KUBECONFIG=$(pwd)/kubeconfig.yaml
-                cat kubeconfig.yaml
-                sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
-                kubectl apply -f k8s/
+              git config --global user.email "alperenhasanselcuk@gmail.com"
+              git config --global user.name "alperen-selcuk"
+              git clone https://$GIT_USER:$GIT_PASS@github.com/alperen-selcuk/todoapp
+              cd todoapp
+              sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
+              git add k8s/deployment.yaml
+              git commit -m "CI: update image to hasanalperen/todoapp:$BUILD_NUMBER"
+              git push origin main
             '''
           }
-        }
       }
     }
+}
 }
 }
