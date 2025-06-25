@@ -37,7 +37,9 @@ spec:
   environment {
     KUBECONFIG_B64 = credentials('kubeconfig') 
   }
-
+  options {
+    ansiColor('xterm') 
+  }
   stages {
     stage('Maven Build') {
       steps {
@@ -66,6 +68,7 @@ spec:
             sh '''
                 echo "$KUBECONFIG_B64" | base64 -d > kubeconfig.yaml
                 export KUBECONFIG=$(pwd)/kubeconfig.yaml
+                cat kubeconfig.yaml
                 sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
                 kubectl apply -f k8s/
             '''
