@@ -42,9 +42,9 @@ spec:
     stage('Docker Build') {
       steps {
         container('docker') {
-          withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKERHUB-PASS', usernameVariable: 'DOCKERHUB-USER')]) {
+          withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKERHUB_PASS', usernameVariable: 'DOCKERHUB_USER')]) {
             sh '''
-              docker login -u "$DOCKERHUB-USER" -p "$DOCKERHUB-PASS"
+              docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PASS"
               docker build -t  hasanalperen/todoapp:$BUILD_NUMBER .
               docker push hasanalperen/todoapp:$BUILD_NUMBER
             '''
