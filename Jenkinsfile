@@ -25,10 +25,18 @@ spec:
       value: overlay2
     - name: DOCKER_TLS_CERTDIR
       value: ""
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command:
+    - cat
+    tty: true
 """
     }
   }
 
+  environment {
+    KUBECONFIG_B64 = credentials('kubeconfig-b64') 
+  }
 
   stages {
     stage('Maven Build') {
@@ -52,5 +60,18 @@ spec:
         }
       }
     }
+    stage('Kubernetes Deploy') {
+      steps {
+        container('kubectl') {
+          withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+            sh '''
+                echo "$KUBECONFIG_B64" | base64 -d > kubeconfig.yaml
+                export KUBECONFIG=$(pwd)/kubeconfig.yaml
+                sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
+                kubectl apply -f k8s/.
+            '''
+          }
+        }
+      }
   }
 }
