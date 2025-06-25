@@ -63,8 +63,8 @@ spec:
     stage('Kubernetes Deploy') {
       steps {
         container('kubectl') {
+          withCredentials([string(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
             sh '''
-                echo "$KUBECONFIG_B64" | base64 -d > kubeconfig.yaml
                 export KUBECONFIG=$(pwd)/kubeconfig.yaml
                 cat kubeconfig.yaml
                 sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
@@ -73,6 +73,6 @@ spec:
           }
         }
       }
-
+    }
 }
 }
