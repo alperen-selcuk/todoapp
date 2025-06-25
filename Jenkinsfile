@@ -37,9 +37,7 @@ spec:
   environment {
     KUBECONFIG_B64 = credentials('kubeconfig') 
   }
-  options {
-    ansiColor('xterm') 
-  }
+
   stages {
     stage('Maven Build') {
       steps {
