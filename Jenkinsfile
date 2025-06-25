@@ -67,7 +67,7 @@ spec:
               git config --global user.name "alperen-selcuk"
               git clone https://$GIT_USER:$GIT_PASS@github.com/alperen-selcuk/todoapp
               cd todoapp
-              sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
+              sed -i 's|hasanalperen/todoapp:.*|hasanalperen/todoapp:'"$BUILD_NUMBER"'|' k8s/deployment.yaml
               git add k8s/deployment.yaml
               git commit -m "CI: update image to hasanalperen/todoapp:$BUILD_NUMBER"
               git push origin main
