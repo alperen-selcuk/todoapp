@@ -65,6 +65,7 @@ spec:
         container('kubectl') {
           withCredentials([string(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
             sh '''
+                echo "$KUBECONFIG" | base64 -d > $(pwd)/kubeconfig.yaml
                 export KUBECONFIG=$(pwd)/kubeconfig.yaml
                 cat kubeconfig.yaml
                 sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
