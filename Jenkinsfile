@@ -35,7 +35,7 @@ spec:
   }
 
   environment {
-    KUBECONFIG_B64 = credentials('kubeconfig-b64') 
+    KUBECONFIG_B64 = credentials('kubeconfig') 
   }
 
   stages {
