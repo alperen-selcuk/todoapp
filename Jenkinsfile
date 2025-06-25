@@ -67,7 +67,7 @@ spec:
                 echo "$KUBECONFIG_B64" | base64 -d > kubeconfig.yaml
                 export KUBECONFIG=$(pwd)/kubeconfig.yaml
                 sed -i "s|image: __IMAGE__|image: hasanalperen/todoapp:$BUILD_NUMBER|" k8s/deployment.yaml
-                kubectl apply -f k8s/.
+                kubectl apply -f k8s/
             '''
           }
         }
