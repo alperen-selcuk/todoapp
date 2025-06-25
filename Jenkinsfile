@@ -42,10 +42,13 @@ spec:
     stage('Docker Build') {
       steps {
         container('docker') {
-          sh '''
-            dockerd-entrypoint.sh & sleep 10
-            docker build -t todoapp:latest .
-          '''
+          withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKERHUB-PASS', usernameVariable: 'DOCKERHUB-USER')]) {
+            sh '''
+              docker login -u "$DOCKERHUB-USER" -p "$DOCKERHUB-PASS"
+              docker build -t  hasanalperen/todoapp:$BUILD_NUMBER .
+              docker push hasanalperen/todoapp:$BUILD_NUMBER
+            '''
+          }
         }
       }
     }
