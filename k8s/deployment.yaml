@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: todoapp
-        image: hasanalperen/todoapp:26 # Bu alan CI/CD tarafından otomatik doldurulacaktır
+        image: hasanalperen/helloworld
         ports:
         - containerPort: 8080
