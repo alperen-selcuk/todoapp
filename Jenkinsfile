@@ -63,7 +63,6 @@ spec:
     stage('Kubernetes Deploy') {
       steps {
         container('kubectl') {
-          withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
             sh '''
                 echo "$KUBECONFIG_B64" | base64 -d > kubeconfig.yaml
                 export KUBECONFIG=$(pwd)/kubeconfig.yaml
